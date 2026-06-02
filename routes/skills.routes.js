@@ -1,17 +1,17 @@
 import express from 'express';
-import {
-  getAllSkills,
-  createSkill,
-  updateSkill,
-  deleteSkill,
-} from '../controllers/skills.controller.js';
-import { authMiddleware } from '../middleware/auth.middleware.js';
+import { PrismaClient } from '@prisma/client';
 
+const prisma = new PrismaClient();
 const router = express.Router();
 
-router.get('/', getAllSkills);
-router.post('/', authMiddleware, createSkill);
-router.put('/:id', authMiddleware, updateSkill);
-router.delete('/:id', authMiddleware, deleteSkill);
+// TEST: GET ALL SKILLS
+router.get('/', async (req, res) => {
+  try {
+    const skills = await prisma.skill.findMany();
+    res.json(skills);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 export default router;
