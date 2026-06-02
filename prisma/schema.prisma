@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -20,22 +20,23 @@ model Admin {
 }
 
 model Profile {
-  id          String   @id @default(cuid())
-  fullName    String
-  title       String
-  email       String
-  phone       String
-  github      String?
-  summary     String   @db.Text
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               String   @id @default(cuid())
+  fullName         String
+  title            String
+  email            String
+  phone            String
+  github           String?
+  profilePicture   String?
+  summary          String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
 model Project {
   id           String   @id @default(cuid())
   name         String
-  description  String   @db.Text
-  technologies Json     @default("[]")
+  description  String
+  technologies String   @default("[]")
   link         String?
   github       String?
   imageUrl     String?
@@ -51,6 +52,8 @@ model Skill {
   proficiency String @default("intermediate")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([name, category])
 }
 
 model Education {
@@ -60,7 +63,7 @@ model Education {
   startYear Int
   endYear   Int
   status    String
-  details   Json     @default("[]")
+  details   String   @default("[]")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -70,7 +73,7 @@ model Contact {
   name      String
   email     String
   subject   String
-  message   String   @db.Text
+  message   String
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

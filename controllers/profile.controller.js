@@ -14,7 +14,7 @@ export const getProfile = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    const { fullName, title, email, phone, github, summary } = req.body;
+    const { fullName, title, email, phone, github, summary, profilePicture } = req.body;
 
     const profile = await prisma.profile.update({
       where: { id: 'profile-1' },
@@ -25,6 +25,7 @@ export const updateProfile = async (req, res) => {
         phone,
         github,
         summary,
+        profilePicture,
       },
     });
 

@@ -5,8 +5,8 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Create or update admin user
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
-  const adminPassword = process.env.ADMIN_PASSWORD || 'SecurePassword123!';
+  const adminEmail = process.env.ADMIN_EMAIL || 'samwel@gmail.com';
+  const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@123';
   
   const hashedPassword = await bcrypt.hash(adminPassword, 10);
   
@@ -48,7 +48,7 @@ async function main() {
         id: 'project-1',
         name: 'Kariakoo Navigation System',
         description: 'Smart system for navigating Kariakoo market and locating shops efficiently.',
-        technologies: JSON.parse('["JavaScript", "Mapping Systems", "Web Development"]'),
+        technologies: JSON.stringify(["JavaScript", "Mapping Systems", "Web Development"]),
         featured: true,
       },
     }),
@@ -59,7 +59,7 @@ async function main() {
         id: 'project-2',
         name: 'Data Analysis Dashboard',
         description: 'Interactive dashboard for business insights using Power BI and Python.',
-        technologies: JSON.parse('["Power BI", "Python", "Data Visualization"]'),
+        technologies: JSON.stringify(["Power BI", "Python", "Data Visualization"]),
         featured: true,
       },
     }),
@@ -70,7 +70,7 @@ async function main() {
         id: 'project-3',
         name: 'Student Performance Predictor',
         description: 'Machine learning model predicting student academic performance.',
-        technologies: JSON.parse('["Python", "Machine Learning", "Data Science"]'),
+        technologies: JSON.stringify(["Python", "Machine Learning", "Data Science"]),
         featured: true,
       },
     }),
@@ -79,21 +79,26 @@ async function main() {
   console.log('Projects created:', projects);
 
   // Seed skills
-  const skills = await Promise.all([
-    prisma.skill.createMany({
-      data: [
-        { name: 'Python', category: 'Programming Languages', proficiency: 'expert' },
-        { name: 'JavaScript', category: 'Programming Languages', proficiency: 'expert' },
-        { name: 'Java', category: 'Programming Languages', proficiency: 'intermediate' },
-        { name: 'SQL', category: 'Data Tools', proficiency: 'expert' },
-        { name: 'React', category: 'Web Development', proficiency: 'expert' },
-        { name: 'Next.js', category: 'Web Development', proficiency: 'expert' },
-        { name: 'Machine Learning', category: 'Core Skills', proficiency: 'expert' },
-        { name: 'Data Analysis', category: 'Core Skills', proficiency: 'expert' },
-      ],
-      skipDuplicates: true,
-    }),
-  ]);
+  const skillsData = [
+    { name: 'Python', category: 'Programming Languages', proficiency: 'expert' },
+    { name: 'JavaScript', category: 'Programming Languages', proficiency: 'expert' },
+    { name: 'Java', category: 'Programming Languages', proficiency: 'intermediate' },
+    { name: 'SQL', category: 'Data Tools', proficiency: 'expert' },
+    { name: 'React', category: 'Web Development', proficiency: 'expert' },
+    { name: 'Next.js', category: 'Web Development', proficiency: 'expert' },
+    { name: 'Machine Learning', category: 'Core Skills', proficiency: 'expert' },
+    { name: 'Data Analysis', category: 'Core Skills', proficiency: 'expert' },
+  ];
+
+  const skills = await Promise.all(
+    skillsData.map(skill =>
+      prisma.skill.upsert({
+        where: { name_category: { name: skill.name, category: skill.category } },
+        update: {},
+        create: skill,
+      })
+    )
+  );
 
   console.log('Skills created');
 
@@ -108,7 +113,7 @@ async function main() {
       startYear: 2023,
       endYear: 2026,
       status: 'Final Year',
-      details: JSON.parse('["Expected Graduation: August 2026", "Strong academic performance", "Focus on Machine Learning and Data Analysis"]'),
+      details: JSON.stringify(["Expected Graduation: August 2026", "Strong academic performance", "Focus on Machine Learning and Data Analysis"]),
     },
   });
 
